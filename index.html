@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <h1 class="page-title">Budget Tracker</h1>
+            <div class="header-actions">
+                <button class="add-month-btn" id="addMonthBtn" title="Open New Month">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="10" y1="4" x2="10" y2="16"></line>
+                        <line x1="4" y1="10" x2="16" y2="10"></line>
+                    </svg>
+                    <span>Add Month</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Current Month Card -->
+            <div class="card" id="currentMonthCard">
+                <div class="card-content">
+                    <div class="card-info">
+                        <div class="today-text" id="todayText">-</div>
+                        <h3 class="card-title" id="currentMonthName">No Active Month</h3>
+                        <p class="card-subtitle" id="monthDateRange">-</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Available Money Card -->
+            <div class="card">
+                <div class="card-content">
+                    <div class="large-number">
+                        <span id="totalAvailable">0</span>
+                        <span class="currency">₪</span>
+                    </div>
+                    <h3 class="card-title">Total Available</h3>
+                    <p class="card-subtitle" id="lastUpdated">-</p>
+                </div>
+            </div>
+
+            <!-- Calendar/Timeline Card -->
+            <div class="card calendar-card">
+                <div class="card-content">
+                    <div id="monthTimeline" class="month-timeline">
+                        <!-- Months will be dynamically generated -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recurring Bills Card -->
+            <div class="card">
+                <div class="card-content">
+                    <h3 class="card-title">Recurring Bills</h3>
+                    <div class="large-number">
+                        <span id="totalRecurring">0</span>
+                        <span class="currency">₪</span>
+                    </div>
+                    <p class="card-subtitle">Total Spent</p>
+                    <div id="recurringBillsList" class="bills-list">
+                        <!-- Bills will be dynamically generated -->
+                    </div>
+                    <button class="add-item-btn" id="addRecurringBtn">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="6" x2="12" y2="18"></line>
+                            <line x1="6" y1="12" x2="18" y2="12"></line>
+                        </svg>
+                        Add Recurring Bill
+                    </button>
+                </div>
+            </div>
+
+            <!-- One-Time Outcomes Card -->
+            <div class="card">
+                <div class="card-content">
+                    <h3 class="card-title">One-Time Outcomes</h3>
+                    <div class="large-number">
+                        <span id="totalOneTime">0</span>
+                        <span class="currency">₪</span>
+                    </div>
+                    <p class="card-subtitle">Total Spent</p>
+                    <div id="oneTimeList" class="bills-list">
+                        <!-- Outcomes will be dynamically generated -->
+                    </div>
+                    <button class="add-item-btn" id="addOneTimeBtn">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="6" x2="12" y2="18"></line>
+                            <line x1="6" y1="12" x2="18" y2="12"></line>
+                        </svg>
+                        Add One-Time Outcome
+                    </button>
+                </div>
+            </div>
+
+            <!-- Months Left Card -->
+            <div class="card">
+                <div class="card-content">
+                    <h3 class="card-title">Months Left</h3>
+                    <div class="large-number">
+                        <span id="monthsLeft">-</span>
+                    </div>
+                    <p class="card-subtitle" id="lastBillInfo">For Last Bill</p>
+                </div>
+            </div>
+
+            <!-- Cash Section Card -->
+            <div class="card">
+                <div class="card-content">
+                    <h3 class="card-title">Cash</h3>
+                    <div class="large-number">
+                        <span id="cashBalance">0</span>
+                        <span class="currency">₪</span>
+                    </div>
+                    <p class="card-subtitle">Current Balance</p>
+                    <div id="cashTransactionsList" class="bills-list">
+                        <!-- Transactions will be dynamically generated -->
+                    </div>
+                    <div style="display: flex; gap: 8px; margin-top: var(--spacing);">
+                        <button class="add-item-btn" id="addCashIncomeBtn" style="flex: 1; margin: 0;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="6" x2="12" y2="18"></line>
+                                <line x1="6" y1="12" x2="18" y2="12"></line>
+                            </svg>
+                            Add Income
+                        </button>
+                        <button class="add-item-btn" id="addCashSpendingBtn" style="flex: 1; margin: 0;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="6" x2="12" y2="18"></line>
+                                <line x1="6" y1="12" x2="18" y2="12"></line>
+                            </svg>
+                            Add Spending
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- New Month Modal -->
+    <div class="modal" id="newMonthModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Open New Month</h2>
+                <button class="close-btn" id="closeNewMonthModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Select Month</label>
+                    <div class="month-input-wrapper">
+                        <input type="month" id="monthInput" required>
+                        <svg class="month-dropdown-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 6 L8 10 L12 6"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Income (₪)</label>
+                    <input type="number" id="incomeInput" step="0.01" min="0" placeholder="0.00" required>
+                </div>
+                <button class="btn-primary" id="saveMonthBtn">Open Month</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Recurring Bill Modal -->
+    <div class="modal" id="recurringBillModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Recurring Bill</h2>
+                <button class="close-btn" id="closeRecurringModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Bill Name</label>
+                    <input type="text" id="billNameInput" placeholder="e.g., Rent" required>
+                </div>
+                <div class="form-group">
+                    <label>Amount (₪)</label>
+                    <input type="number" id="billAmountInput" step="0.01" min="0" placeholder="0.00" required>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="radio" name="billType" value="dates" checked> Use Start/End Dates
+                    </label>
+                    <label>
+                        <input type="radio" name="billType" value="debt"> Calculate from Debt
+                    </label>
+                    <label>
+                        <input type="radio" name="billType" value="infinite"> Infinite (No End Date)
+                    </label>
+                </div>
+                <div id="datesSection">
+                    <div class="form-group">
+                        <label>Start Date</label>
+                        <input type="date" id="billStartDate">
+                    </div>
+                    <div class="form-group">
+                        <label>End Date</label>
+                        <input type="date" id="billEndDate">
+                    </div>
+                </div>
+                <div id="debtSection" style="display: none;">
+                    <div class="form-group">
+                        <label>Total Debt (₪)</label>
+                        <input type="number" id="debtAmountInput" step="0.01" min="0" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label>Monthly Payment (₪)</label>
+                        <input type="number" id="monthlyPaymentInput" step="0.01" min="0" placeholder="0.00">
+                    </div>
+                </div>
+                <button class="btn-primary" id="saveRecurringBtn">Add Bill</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add One-Time Outcome Modal -->
+    <div class="modal" id="oneTimeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add One-Time Outcome</h2>
+                <button class="close-btn" id="closeOneTimeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" id="outcomeDescriptionInput" placeholder="e.g., Groceries" required>
+                </div>
+                <div class="form-group">
+                    <label>Amount (₪)</label>
+                    <input type="number" id="outcomeAmountInput" step="0.01" min="0" placeholder="0.00" required>
+                </div>
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" id="outcomeDateInput" required>
+                </div>
+                <div class="form-group">
+                    <label>Month</label>
+                    <select id="outcomeMonthSelect" required>
+                        <!-- Options will be populated dynamically -->
+                    </select>
+                </div>
+                <button class="btn-primary" id="saveOneTimeBtn">Add Outcome</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Cash Income Modal -->
+    <div class="modal" id="cashIncomeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Cash Income</h2>
+                <button class="close-btn" id="closeCashIncomeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Amount (₪)</label>
+                    <input type="number" id="cashIncomeAmountInput" step="0.01" min="0" placeholder="0.00" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" id="cashIncomeDescriptionInput" placeholder="e.g., Withdrawal from ATM" required>
+                </div>
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" id="cashIncomeDateInput" required>
+                </div>
+                <button class="btn-primary" id="saveCashIncomeBtn">Add Income</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Cash Spending Modal -->
+    <div class="modal" id="cashSpendingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Cash Spending</h2>
+                <button class="close-btn" id="closeCashSpendingModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Amount (₪)</label>
+                    <input type="number" id="cashSpendingAmountInput" step="0.01" min="0" placeholder="0.00" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" id="cashSpendingDescriptionInput" placeholder="e.g., Groceries" required>
+                </div>
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" id="cashSpendingDateInput" required>
+                </div>
+                <button class="btn-primary" id="saveCashSpendingBtn">Add Spending</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Day Details Modal -->
+    <div class="modal" id="dayDetailsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="dayDetailsDate">Day Details</h2>
+                <button class="close-btn" id="closeDayDetailsModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <h3 style="margin-bottom: 12px;">Total Spending</h3>
+                    <div class="large-number" style="font-size: 36px; margin-bottom: 20px;">
+                        <span id="dayDetailsTotal">0</span>
+                        <span class="currency">₪</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <h3 style="margin-bottom: 12px;">One-Time Outcomes</h3>
+                    <div id="dayDetailsList" class="bills-list">
+                        <!-- Outcomes will be populated dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
