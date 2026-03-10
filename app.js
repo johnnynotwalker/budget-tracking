@@ -130,8 +130,8 @@ function closeNewMonthModal() {
 function openRecurringModal() {
     const modal = document.getElementById('recurringBillModal');
     const today = new Date().toISOString().split('T')[0];
+    // Allow past dates for bills, so no min restriction
     document.getElementById('billStartDate').value = today;
-    document.getElementById('billStartDate').min = today;
     modal.classList.add('active');
     handleBillTypeChange(); // Set initial state
 }
@@ -304,17 +304,7 @@ function saveRecurringBill() {
             return;
         }
         
-        // Prevent adding bills for previous months
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const startDateObj = new Date(startDate);
-        startDateObj.setHours(0, 0, 0, 0);
-        
-        if (startDateObj < today) {
-            alert('Cannot add bills for previous months. Please select today or a future date.');
-            return;
-        }
-        
+        // Allow bills that started in the past (no restriction)
         if (endDate && new Date(endDate) < new Date(startDate)) {
             alert('End date must be after start date.');
             return;
